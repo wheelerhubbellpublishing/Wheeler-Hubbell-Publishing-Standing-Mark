@@ -106,7 +106,7 @@ test("preserves path, query, status, content type, and response bytes", async ()
 
 test("answers gateway health without calling the upstream", async () => {
   const beforeCount = received.length;
-  const response = await fetch(`${gatewayOrigin}/__gateway-health`);
+  const response = await fetch(`${gatewayOrigin}/__gateway_health`);
   assert.equal(response.status, 200);
   assert.equal(response.headers.get("cache-control"), "no-store");
   assert.deepEqual(await response.json(), {
