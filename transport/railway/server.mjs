@@ -54,7 +54,7 @@ export function createGatewayServer({
     const requestUrl = request.url || "/";
     const parsedRequestUrl = new URL(requestUrl, "http://gateway.invalid");
 
-    if (parsedRequestUrl.pathname === "/__gateway-health") {
+    if (parsedRequestUrl.pathname === "/__gateway_health") {
       writeJson(response, 200, {
         status: "ok",
         service: "whp-standing-mark-transport",
