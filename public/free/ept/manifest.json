@@ -1,0 +1,48 @@
+{
+  "version": "WHP-FREE-EPT-DISTRIBUTION-v1",
+  "artifact_id": "WHP-EPT-N001",
+  "title": "The Elemental Properties of True",
+  "subtitle": "A Constitutional Text",
+  "author": "Wheeler Hubbell",
+  "edition": "First Edition",
+  "publisher": "Wheeler Hubbell Publishing",
+  "price": {
+    "amount": "0",
+    "currency": "USD",
+    "payment_required": false
+  },
+  "file": {
+    "path": "public/free/ept/N001_The_Elemental_Properties_of_True_First_Edition.pdf",
+    "media_type": "application/pdf",
+    "bytes": 286707,
+    "sha256": "b1d6297ab5bf1a0c2c3ee7e28531285fdfdb6b974513102700d2f24d43feb1ef"
+  },
+  "rights": {
+    "rights_holder": "Wheeler Hubbell",
+    "authorized_distributor": "Wheeler Hubbell Publishing, Inc.",
+    "grant": "One complimentary recipient copy for reading and internal reference.",
+    "retained": "Copyright and all ungranted rights remain with the rights holder.",
+    "no_ownership_transfer": true,
+    "no_resale": true,
+    "no_sublicensing": true,
+    "no_redistribution_without_separate_permission": true
+  },
+  "delivery": {
+    "wallet_required": false,
+    "signature_required": false,
+    "registration_required": false,
+    "reply_required": false,
+    "follow_up": false
+  },
+  "boundaries": [
+    "The free EPT copy is not a Standing Mark, evaluation, endorsement, or evidence of standing.",
+    "Receipt does not establish independent demand, adoption, payment, issuance, or propagation.",
+    "The optional WHP Standing evaluation is separate and recipient-initiated."
+  ],
+  "optional_standing_information": {
+    "environment": "LIVE",
+    "machine_bootstrap": "https://whp-standing-live-production.up.railway.app/.well-known/whp-standing.json",
+    "human_information": "https://whp-standing-live-production.up.railway.app/",
+    "payment_summary": "1 USDC on Base mainnet for an optional evaluation; payment never guarantees a Mark or favorable determination."
+  }
+}
