@@ -1,0 +1,20 @@
+{
+  "name": "whp-netlify-market",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.16.0 <25"
+  },
+  "scripts": {
+    "check": "node --check netlify/functions/market.mjs && node --check netlify/functions/stripe-recovery.mjs && node --check src/ept.mjs && node --check src/market-runtime.mjs && node --check src/market/app.mjs && node --check src/market/config.mjs && node --check src/market/snapshot.mjs",
+    "test": "node --test test/*.test.mjs",
+    "audit": "npm audit --omit=dev"
+  },
+  "dependencies": {
+    "@netlify/database": "2.0.1",
+    "@netlify/functions": "6.0.0",
+    "pg": "8.16.3",
+    "stripe": "22.4.0"
+  }
+}
