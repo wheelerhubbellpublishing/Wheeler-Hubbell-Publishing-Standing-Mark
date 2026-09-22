@@ -1,0 +1,23 @@
+{
+  "name": "whp-autonomous-revenue-loop",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "workspaces": [
+    "autonomous-market",
+    "carrier-daemon",
+    "settlement-observer"
+  ],
+  "scripts": {
+    "start:market": "npm --workspace whp-autonomous-market start",
+    "run:hourly": "node hourly-runner.mjs",
+    "bootstrap:database": "node bootstrap-database.mjs",
+    "test": "npm test --workspaces --if-present"
+  },
+  "dependencies": {
+    "pg": "8.16.3"
+  }
+}

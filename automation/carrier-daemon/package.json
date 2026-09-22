@@ -1,0 +1,20 @@
+{
+  "name": "@whp/ept-carrier-daemon",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Bounded, one-touch public-registry carrier for the complimentary EPT edition.",
+  "engines": {
+    "node": ">=22 <25"
+  },
+  "scripts": {
+    "start": "node src/main.mjs",
+    "run:once": "node src/main.mjs --once",
+    "migrate": "node src/migrate.mjs",
+    "check": "node --check src/main.mjs && node --check src/migrate.mjs && node --check src/run.mjs && node --check src/database.mjs && node --check src/security.mjs",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "pg": "8.16.3"
+  }
+}
