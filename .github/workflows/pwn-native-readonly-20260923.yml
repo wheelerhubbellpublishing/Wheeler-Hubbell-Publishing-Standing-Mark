@@ -9,65 +9,73 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: Read documented public PWN offers only
+      - name: Read native proposals including unpriced and unverified collateral
         shell: bash
         run: |
           python3 - <<'PY'
-          import datetime, hashlib, json, os, urllib.error, urllib.request
+          import datetime, hashlib, json, os, urllib.error, urllib.parse, urllib.request
           HOST = 'https://api.pwn.xyz'
-          LIMIT = 4 * 1024 * 1024
+          PATH = '/api/v2/pwn_contracts/proposal-and-loan/'
+          MAX_BODY = 4 * 1024 * 1024
           class NoRedirect(urllib.request.HTTPRedirectHandler):
               def redirect_request(self, req, fp, code, msg, headers, newurl):
                   return None
           opener = urllib.request.build_opener(NoRedirect)
-          queries = [
-              ('minimal_proposals', '/api/v2/pwn_contracts/proposals/?limit=1'),
-              ('base_open_minimal', '/api/v2/pwn_contracts/proposals/?chains=8453&isOffer=true&statuses=1&limit=20'),
-              ('alternate_combined_listing', '/api/v2/pwn_contracts/proposal-and-loan/?chains=8453&isOffer=true&statuses=1&limit=20'),
-              ('public_strategies', '/api/v2/pwn_contracts/thesis/?limit=1')]
+          broad = {'chains':'8453','isOffer':'true','statuses':'1','limit':'100',
+                   'includeUnverifiedCollateral':'true','includeCollateralWithoutPrice':'true',
+                   'includeUnverifiedCredit':'true','includeCreditWithoutPrice':'true',
+                   'includeLoans':'false','includeProposals':'true'}
+          queries = [('base_open_inclusive',broad),('elemental_name_search',dict(broad,q='Elemental'))]
           report = {'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    'operation':'PUBLIC_GET_ONLY','source':'PWNDAO/pwn-sdks packages/api/src/generated/methods/include-sdk.ts',
-                    'seller_request':'ept-internal-use-15000','specific_collateral_identifier_supplied':False,
-                    'writes':False,'signatures_generated':False,'transactions_submitted':False,'results':[]}
-          for label, path in queries:
-              url = HOST + path
-              item = {'label':label,'url':url}
+                    'operation':'PUBLIC_GET_ONLY','source':'PWNDAO/pwn-sdks native proposal-and-loan API',
+                    'specific_ept_collateral_identifier_supplied':False,
+                    'counterparty_writes':False,'signatures_generated':False,'transactions_submitted':False,'queries':[]}
+          for label,params in queries:
+              url = HOST+PATH+'?'+urllib.parse.urlencode(params)
+              result={'label':label,'url':url,'rows':[]}
               try:
-                  req = urllib.request.Request(url, headers={'Accept':'application/json','User-Agent':'WHP-native-market-readonly/1.0'}, method='GET')
+                  req=urllib.request.Request(url,headers={'Accept':'application/json','User-Agent':'WHP-native-market-readonly/1.0'},method='GET')
                   try:
-                      response = opener.open(req, timeout=20)
+                      response=opener.open(req,timeout=25)
                   except urllib.error.HTTPError as exc:
-                      response = exc
+                      response=exc
                   with response:
-                      raw = response.read(LIMIT + 1)
-                      item.update(http_status=response.code, content_type=response.headers.get('Content-Type'),
-                                  response_date=response.headers.get('Date'), response_sha256=hashlib.sha256(raw).hexdigest())
-                  if len(raw) > LIMIT:
-                      item['error'] = 'RESPONSE_LIMIT_EXCEEDED'
-                  else:
-                      try:
-                          data = json.loads(raw)
-                          if isinstance(data, dict):
-                              item['response_keys'] = sorted(data)
-                              item['count'] = data.get('count')
-                              item['next'] = data.get('next')
-                              rows = data.get('results')
-                              item['returned_rows'] = len(rows) if isinstance(rows,list) else None
-                              if isinstance(rows,list):
-                                  for index, row in enumerate(rows):
-                                      print('PWN_NATIVE_ROW ' + json.dumps({'query':label,'index':index,'row':row},separators=(',',':')))
-                              else:
-                                  item['response'] = data
-                          else:
-                              item['response'] = data
-                      except (ValueError, TypeError):
-                          item['response_excerpt'] = raw[:1500].decode('utf-8','replace')
+                      raw=response.read(MAX_BODY+1)
+                      result.update(http_status=response.code,response_date=response.headers.get('Date'),response_sha256=hashlib.sha256(raw).hexdigest())
+                  if len(raw)>MAX_BODY:
+                      raise ValueError('RESPONSE_LIMIT_EXCEEDED')
+                  try:
+                      data=json.loads(raw)
+                  except ValueError:
+                      result['body_excerpt']=raw[:1000].decode('utf-8','replace')
+                      data=None
+                  if isinstance(data,dict):
+                      result.update(count=data.get('count'),next=data.get('next'))
+                      rows=data.get('results')
+                      result['returned_rows']=len(rows) if isinstance(rows,list) else None
+                      if isinstance(rows,list):
+                          for row in rows:
+                              collateral=row.get('collateral') or {}
+                              credit=row.get('creditAsset') or {}
+                              specific=row.get('proposalSpecificData') or {}
+                              summary={'id':row.get('id'),'status':row.get('status'),'isOffer':row.get('isOffer'),'chainId':row.get('chainId'),
+                                       'collateral':{k:collateral.get(k) for k in ('name','symbol','address','tokenId','category','isVerified')},
+                                       'credit':{k:credit.get(k) for k in ('name','symbol','address','decimals')},
+                                       'creditData':row.get('creditData'),'minCreditAmount':row.get('minCreditAmount'),
+                                       'maxAvailableCreditAmount_reported':specific.get('maxAvailableCreditAmount',row.get('maxAvailableCreditAmount')),
+                                       'proposer':row.get('proposer'),'allowedAcceptor':specific.get('allowedAcceptor',row.get('allowedAcceptor')),
+                                       'proposalContractAddress':row.get('proposalContractAddress'),'loanContract':row.get('loanContract'),
+                                       'signature_present':bool(specific.get('signature',row.get('signature'))),'expiration':row.get('expiration'),
+                                       'independent_funding_verified':False}
+                              result['rows'].append(summary)
+                      else:
+                          result['response']=data
               except Exception as exc:
-                  item['error'] = type(exc).__name__ + ': ' + str(exc)
-              report['results'].append(item)
-              print('PWN_NATIVE_QUERY_RESULT ' + json.dumps(item,sort_keys=True))
-          report['interpretation'] = 'Transport/API results only. Listing OPEN is not independent funding verification. No absence or eligibility inference from HTTP or network failure. These GETs neither submit the EPT receivable nor sign a proposal.'
-          print('PWN_NATIVE_REPORT ' + json.dumps(report,sort_keys=True))
+                  result['error']=type(exc).__name__+': '+str(exc)
+              report['queries'].append(result)
+              print('PWN_NATIVE_QUERY_RESULT '+json.dumps(result,sort_keys=True))
+          report['interpretation']='Observed API results only. API counts and returned-row counts remain separate. No token-identity match without the actual collateral identifier. No eligibility rejection, signature verification, on-chain funds check, acceptance or settlement is claimed.'
+          print('PWN_NATIVE_REPORT '+json.dumps(report,sort_keys=True))
           with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as f:
               f.write('# PWN native read-only market check\n\n```json\n'+json.dumps(report,indent=2)+'\n```\n')
           PY
