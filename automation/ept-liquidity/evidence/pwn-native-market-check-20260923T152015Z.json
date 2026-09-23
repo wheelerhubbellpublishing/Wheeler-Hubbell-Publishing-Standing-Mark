@@ -1,0 +1,85 @@
+{
+  "record_type": "OBSERVED_NATIVE_MARKET_READ",
+  "record_version": "1.0.0",
+  "checked_at": "2026-09-23T15:20:15.408487+00:00",
+  "request_id": "ept-internal-use-15000",
+  "source": {
+    "provider": "PWN",
+    "documented_api_source": "https://github.com/PWNDAO/pwn-sdks/blob/master/packages/api/src/generated/methods/include-sdk.ts",
+    "documented_parameter_source": "https://github.com/PWNDAO/pwn-sdks/blob/master/packages/api/src/generated/schemas/proposal-list-params.ts",
+    "workflow_commit": "729996459858d277b4dc77999ee6c8cc882ccca1",
+    "workflow_run_id": "35880774527",
+    "workflow_job_id": "107248355735",
+    "workflow_run_url": "https://github.com/wheelerhubbellpublishing/Wheeler-Hubbell-Publishing-Standing-Mark/actions/runs/35880774527",
+    "evidence_basis": "Extracted from the completed workflow job logs. This file is a results summary, not the original API response."
+  },
+  "operations": {
+    "counterparty_http_method": "GET",
+    "counterparty_writes": false,
+    "wallet_signatures_generated": false,
+    "financial_transactions_submitted": false,
+    "standing_services_modified": false,
+    "new_hosting_provisioned": false
+  },
+  "queries": [
+    {
+      "label": "base_open_inclusive",
+      "url": "https://api.pwn.xyz/api/v2/pwn_contracts/proposal-and-loan/?chains=8453&isOffer=true&statuses=1&limit=100&includeUnverifiedCollateral=true&includeCollateralWithoutPrice=true&includeUnverifiedCredit=true&includeCreditWithoutPrice=true&includeLoans=false&includeProposals=true",
+      "http_status": 200,
+      "response_date": "Wed, 23 Sep 2026 15:20:15 GMT",
+      "response_sha256": "4cc004d64f48adae98847f04cf60bf6ed6aef5f0ea685b33faa6603b97d543c4",
+      "api_reported_count": 18,
+      "actual_returned_rows": 12,
+      "next": null,
+      "coverage": "The response reports count 18 but contains 12 rows and no next page. This is not asserted to be an exhaustive market inventory.",
+      "all_returned_rows": {
+        "chain_id": 8453,
+        "is_offer": true,
+        "api_status": 1,
+        "credit_asset": "USDC",
+        "credit_asset_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+        "credit_asset_decimals": 6,
+        "signature_field_present": true,
+        "allowed_acceptor": "0x0000000000000000000000000000000000000000",
+        "signature_independently_verified": false,
+        "on_chain_funding_independently_verified": false
+      },
+      "returned_collateral_groups": [
+        {"symbol": "wstETH", "contract": "0xc1CBa3fCea344f92D9239c08C0568f6F2F0ee452", "token_id": null, "proposal_ids": ["11638", "11372"]},
+        {"symbol": "cbETH", "contract": "0x2Ae3F1Ec7F1F5012CFEab0185bfc7aa3cf0DEc22", "token_id": null, "proposal_ids": ["11637", "11371"]},
+        {"symbol": "WETH", "contract": "0x4200000000000000000000000000000000000006", "token_id": null, "proposal_ids": ["11636", "11370"]},
+        {"symbol": "tBTC", "contract": "0x236aa50979D5f3De3Bd1Eeb40E81137F22ab794b", "token_id": null, "proposal_ids": ["11635", "11369"]},
+        {"symbol": "cbBTC", "contract": "0xcbB7C0000aB88B473b1f5aFd9ef808440eed33Bf", "token_id": null, "proposal_ids": ["11634", "11368"]},
+        {"symbol": "WBTC", "contract": "0x0555E30da8f98308EdB960aa94C0Db47230d2B9c", "token_id": null, "proposal_ids": ["11633", "11367"]}
+      ]
+    },
+    {
+      "label": "elemental_name_search",
+      "url": "https://api.pwn.xyz/api/v2/pwn_contracts/proposal-and-loan/?chains=8453&isOffer=true&statuses=1&limit=100&includeUnverifiedCollateral=true&includeCollateralWithoutPrice=true&includeUnverifiedCredit=true&includeCreditWithoutPrice=true&includeLoans=false&includeProposals=true&q=Elemental",
+      "http_status": 200,
+      "response_date": "Wed, 23 Sep 2026 15:20:16 GMT",
+      "response_sha256": "0595424161ea863805d9b92c0e52d7aa1e3c46ec58cd8f0d6933759006a5fb74",
+      "api_reported_count": 0,
+      "actual_returned_rows": 0,
+      "next": null,
+      "scope": "Text search only. Not an exact collateral-contract/token-identifier match."
+    }
+  ],
+  "earlier_route_observation": {
+    "workflow_run_id": "35880533491",
+    "filtered_proposals_endpoint_http_status": 500,
+    "minimal_unfiltered_proposals_endpoint_http_status": 200,
+    "alternate_proposal_and_loan_endpoint_http_status": 200,
+    "conclusion": "The filtered proposals failure did not establish that the PWN API or its market was inaccessible. The documented alternate listing returned offer data."
+  },
+  "matching_status": {
+    "specific_ept_collateral_identifier_used": false,
+    "retrieved_offer_covering_identified_ept_payment_right": false,
+    "universal_absence_or_ineligibility_established": false,
+    "native_proposal_submitted": false,
+    "quote_accepted": false,
+    "funding_or_collateral_transfer": false,
+    "settlement_confirmed": false,
+    "interpretation": "Direct native market access was demonstrated. Returned offers specify the listed ETH/BTC-related token contracts; they do not demonstrate financing of the EPT payment right. Publication of request.json is not submission to PWN, lender acceptance, or evidence of funding."
+  }
+}
