@@ -1,6 +1,6 @@
 {
   "protocol": "WHP-Decision-Integrity-v1",
-  "schema_version": "1.0.0",
+  "schema_version": "1.1.0",
   "request_id": "ept-internal-use-15000",
   "record_kind": "REQUEST_FOR_FUNDING_TERMS",
   "transaction_type": "DUAL_MODE_OFFER",
@@ -15,9 +15,16 @@
     "licensed_field": "Bounded internal constitutional and governance use by Wheeler Hubbell Publishing, Inc.",
     "face_value": {"amount": "15000.00", "currency": "USD"},
     "account_debtor": "Wheeler Hubbell Publishing, Inc.",
-    "evidence_scope": "This publication describes the seller's identified payment right. It does not independently attest execution of the underlying license or Article 12 control.",
-    "executed_license_reference": null,
-    "control_record_reference": null
+    "obligation_status": "EXECUTED_PRESENTLY_DUE",
+    "effective_date": "2026-09-23",
+    "license_term_end": "2027-09-22",
+    "payment_due_date": "2026-09-23",
+    "executed_license_reference": "https://github.com/wheelerhubbellpublishing/Wheeler-Hubbell-Publishing-Standing-Mark/blob/6c070469b2c3f86e4fb77f29054c83a688f8d55d/automation/ept-liquidity/executed-license-2026-09-23.md",
+    "licensed_copy_sha256": "b1d6297ab5bf1a0c2c3ee7e28531285fdfdb6b974513102700d2f24d43feb1ef",
+    "signed_docx_sha256": "9dfa37f2e0587abbc47c0ebcb154c1a0c10579e4c7de55f9700d93a9fd1730ba",
+    "signed_pdf_sha256": "b41d172aeb8d53425aa35f7f085339eaa6670e59c4e9cd4a8985549b87c6f97d",
+    "control_record_reference": null,
+    "native_collateral_representation": null
   },
   "funding": {
     "partial_funding_permitted": true,
@@ -54,6 +61,33 @@
   "settlement_preference": {
     "network": "eip155:8453",
     "asset": "USDC"
+  },
+  "native_protocol_mapping": {
+    "pwn": {
+      "chain_id": 8453,
+      "credit_address": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "collateral_category": null,
+      "collateral_address": null,
+      "collateral_id": null,
+      "collateral_amount": null,
+      "proposer": null,
+      "allowed_acceptor": null,
+      "credit_amount": null,
+      "fixed_interest_amount": null,
+      "accruing_interest_apr": null,
+      "duration_or_date": null,
+      "expiration": null,
+      "loan_contract": null,
+      "proposal_contract_address": null,
+      "nonce_space": null,
+      "nonce": null,
+      "hash": null,
+      "signature": null,
+      "multiproposal_merkle_root": null,
+      "source_of_funds": null,
+      "related_thesis_id": null,
+      "mapping_rule": "Only verified legal and protocol state is populated. Native signer, collateral representation, and financing economics remain null until supplied by the actual PWN-native transaction."
+    }
   },
   "transport": {
     "discovery": "PUBLIC_HTTPS_JSON",
