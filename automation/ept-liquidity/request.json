@@ -1,0 +1,73 @@
+{
+  "protocol": "WHP-Decision-Integrity-v1",
+  "schema_version": "1.0.0",
+  "request_id": "ept-internal-use-15000",
+  "record_kind": "REQUEST_FOR_FUNDING_TERMS",
+  "transaction_type": "DUAL_MODE_OFFER",
+  "seller": {
+    "name": "Justin Bowen",
+    "capacity": "INDIVIDUAL"
+  },
+  "asset": {
+    "classification": "ACCOUNT",
+    "origin": "EPT_INTERNAL_USE_LICENSE",
+    "title": "The Elemental Properties of True",
+    "licensed_field": "Bounded internal constitutional and governance use by Wheeler Hubbell Publishing, Inc.",
+    "face_value": {"amount": "15000.00", "currency": "USD"},
+    "account_debtor": "Wheeler Hubbell Publishing, Inc.",
+    "evidence_scope": "This publication describes the seller's identified payment right. It does not independently attest execution of the underlying license or Article 12 control.",
+    "executed_license_reference": null,
+    "control_record_reference": null
+  },
+  "funding": {
+    "partial_funding_permitted": true,
+    "modes": ["PURCHASE", "SECURED_ADVANCE"],
+    "mode_preference": null,
+    "face_value_is_requested_funding_amount": false
+  },
+  "exclusions": [
+    "UPSTREAM_EPT_ESTATE",
+    "UNRELATED_IP",
+    "UNRELATED_ASSETS",
+    "WHP_EQUITY",
+    "PERSONAL_GUARANTEE",
+    "BLANKET_LIEN",
+    "CROSS_COLLATERALIZATION"
+  ],
+  "requested_quote_terms": [
+    "mode",
+    "gross_funding",
+    "net_proceeds_to_seller",
+    "all_fees_interest_and_costs",
+    "exact_payment_right_purchased_or_collateral_scope",
+    "repayment_obligor_and_recourse",
+    "maturity_where_applicable",
+    "settlement_method_and_deadline",
+    "offer_expiration",
+    "remaining_programmatic_conditions",
+    "standing_authority_or_signed_native_proposal_reference",
+    "funding_source_reference"
+  ],
+  "execution_constraint": {
+    "additional_discretionary_human_underwriting_per_draw": false
+  },
+  "settlement_preference": {
+    "network": "eip155:8453",
+    "asset": "USDC"
+  },
+  "transport": {
+    "discovery": "PUBLIC_HTTPS_JSON",
+    "new_application_server_required_for_discovery": false,
+    "custom_WHP_signature_required_to_read": false,
+    "counterparty_native_proposals_may_be_evaluated_without_this_quote_server": true,
+    "active_quote_submission_endpoint": null
+  },
+  "publication_scope": {
+    "request_only": true,
+    "binding_purchase_or_loan_acceptance": false,
+    "authorizes_fund_or_collateral_transfer": false,
+    "external_registry_registration_attested": false,
+    "matching_funded_offer_attested": false,
+    "settlement_attested": false
+  }
+}
