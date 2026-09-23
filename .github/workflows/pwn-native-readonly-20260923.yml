@@ -1,0 +1,74 @@
+name: PWN native read-only market check
+on:
+  push:
+    branches: [ept-liquidity-20260923]
+    paths: [.github/workflows/pwn-native-readonly-20260923.yml]
+permissions: {}
+jobs:
+  read-native-offers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read documented public PWN offers only
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import datetime, hashlib, json, os, urllib.error, urllib.parse, urllib.request
+          HOST = 'https://api.pwn.xyz'
+          PATH = '/api/v2/pwn_contracts/proposals/'
+          LIMIT = 4 * 1024 * 1024
+          class NoRedirect(urllib.request.HTTPRedirectHandler):
+              def redirect_request(self, req, fp, code, msg, headers, newurl):
+                  return None
+          opener = urllib.request.build_opener(NoRedirect)
+          base = {'chains':'8453','isOffer':'true','statuses':'1','limit':'100',
+                  'includeUnverifiedCollateral':'true','includeCollateralWithoutPrice':'true',
+                  'includeUnverifiedCredit':'true','includeCreditWithoutPrice':'true'}
+          queries = [('base_open_lending_offers', base),
+                     ('ept_name_search', dict(base, q='Elemental'))]
+          report = {'checked_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    'operation':'PUBLIC_GET_ONLY','source':'PWNDAO/pwn-sdks packages/api/src/generated/methods/include-sdk.ts',
+                    'seller_request':'ept-internal-use-15000','specific_collateral_identifier_supplied':False,
+                    'writes':False,'signatures_generated':False,'transactions_submitted':False,'results':[]}
+          for label, params in queries:
+              url = HOST + PATH + '?' + urllib.parse.urlencode(params)
+              item = {'label':label,'url':url}
+              try:
+                  req = urllib.request.Request(url, headers={'Accept':'application/json','User-Agent':'WHP-native-market-readonly/1.0'}, method='GET')
+                  try:
+                      response = opener.open(req, timeout=25)
+                  except urllib.error.HTTPError as exc:
+                      response = exc
+                  with response:
+                      raw = response.read(LIMIT + 1)
+                      item.update(http_status=response.code, content_type=response.headers.get('Content-Type'),
+                                  response_date=response.headers.get('Date'), response_sha256=hashlib.sha256(raw).hexdigest())
+                  if len(raw) > LIMIT:
+                      item['error'] = 'RESPONSE_LIMIT_EXCEEDED'
+                  else:
+                      try:
+                          data = json.loads(raw)
+                          if isinstance(data, dict):
+                              item['response_keys'] = sorted(data)
+                              item['count'] = data.get('count')
+                              item['next'] = data.get('next')
+                              rows = data.get('results')
+                              item['returned_rows'] = len(rows) if isinstance(rows,list) else None
+                              if isinstance(rows,list):
+                                  for index, row in enumerate(rows):
+                                      print('PWN_NATIVE_ROW ' + json.dumps({'query':label,'index':index,'row':row},separators=(',',':')))
+                              else:
+                                  item['response'] = data
+                          else:
+                              item['response'] = data
+                      except (ValueError, TypeError):
+                          item['response_excerpt'] = raw[:1500].decode('utf-8','replace')
+              except Exception as exc:
+                  item['error'] = type(exc).__name__ + ': ' + str(exc)
+              report['results'].append(item)
+              print('PWN_NATIVE_QUERY_RESULT ' + json.dumps(item,sort_keys=True))
+          report['interpretation'] = 'Transport/API results only. Listing OPEN is not independent funding verification. A name search is not a token-identity match. No absence inference from network or HTTP failures.'
+          print('PWN_NATIVE_REPORT ' + json.dumps(report,sort_keys=True))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a',encoding='utf-8') as f:
+              f.write('# PWN native read-only market check\n\n```json\n'+json.dumps(report,indent=2)+'\n```\n')
+          PY
